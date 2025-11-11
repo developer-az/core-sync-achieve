@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Activity, Target, Trophy } from "lucide-react";
 import heroDashboard from "@/assets/hero-dashboard.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
       {/* Animated background elements */}
@@ -56,11 +59,22 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4">
-              <Button size="lg" className="bg-gradient-to-r from-cyan to-purple hover:shadow-cyan text-white font-semibold px-8 rounded-full transition-all duration-300 hover:scale-105">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-cyan to-purple hover:shadow-cyan text-white font-semibold px-8 rounded-full transition-all duration-300 hover:scale-105"
+                onClick={() => navigate('/auth')}
+              >
                 Get Started
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-cyan/30 text-cyan hover:bg-cyan/10 rounded-full px-8">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-cyan/30 text-cyan hover:bg-cyan/10 rounded-full px-8"
+                onClick={() => {
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 Learn More
               </Button>
             </div>

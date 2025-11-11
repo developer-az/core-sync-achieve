@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          fitness_goals: string | null
+          fitness_level: Database["public"]["Enums"]["fitness_level"] | null
+          id: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          fitness_goals?: string | null
+          fitness_level?: Database["public"]["Enums"]["fitness_level"] | null
+          id: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          fitness_goals?: string | null
+          fitness_level?: Database["public"]["Enums"]["fitness_level"] | null
+          id?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +52,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      fitness_level: "beginner" | "intermediate" | "advanced"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +179,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      fitness_level: ["beginner", "intermediate", "advanced"],
+    },
   },
 } as const

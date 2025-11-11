@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="cta" className="py-24 px-4 relative overflow-hidden">
       {/* Background effects */}
@@ -31,6 +34,7 @@ const CTA = () => {
             <Button 
               size="lg" 
               className="bg-gradient-to-r from-cyan to-purple hover:shadow-cyan text-white font-semibold px-10 rounded-full transition-all duration-300 hover:scale-105"
+              onClick={() => navigate('/auth')}
             >
               Create Free Account
               <ArrowRight className="ml-2 w-5 h-5" />
@@ -39,6 +43,7 @@ const CTA = () => {
               size="lg" 
               variant="outline" 
               className="border-purple/30 text-purple hover:bg-purple/10 rounded-full px-10"
+              onClick={() => navigate('/auth')}
             >
               View Demo
             </Button>
