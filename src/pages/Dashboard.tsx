@@ -141,25 +141,25 @@ const Dashboard = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="p-6 bg-card border-cyan/30 animate-fade-in">
-            <div className="text-4xl mb-2">💪</div>
+          <Card className="glass-card glass-card-hover gradient-border p-6 animate-slide-up">
+            <div className="text-4xl mb-2 float-animation">💪</div>
             <p className="text-muted-foreground text-sm mb-1">Workouts This Week</p>
-            <p className="text-3xl font-bold text-foreground">{workoutsThisWeek}</p>
+            <p className="text-3xl font-bold gradient-text">{workoutsThisWeek}</p>
           </Card>
-          <Card className="p-6 bg-card border-purple/30 animate-fade-in">
-            <div className="text-4xl mb-2">🔥</div>
+          <Card className="glass-card glass-card-hover gradient-border p-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            <div className="text-4xl mb-2 float-animation" style={{ animationDelay: '0.5s' }}>🔥</div>
             <p className="text-muted-foreground text-sm mb-1">Current Streak</p>
-            <p className="text-3xl font-bold text-foreground">{currentStreak} days</p>
+            <p className="text-3xl font-bold gradient-text">{currentStreak} days</p>
           </Card>
-          <Card className="p-6 bg-card border-pink/30 animate-fade-in">
-            <div className="text-4xl mb-2">🎯</div>
+          <Card className="glass-card glass-card-hover gradient-border p-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <div className="text-4xl mb-2 float-animation" style={{ animationDelay: '1s' }}>🎯</div>
             <p className="text-muted-foreground text-sm mb-1">Active Goals</p>
-            <p className="text-3xl font-bold text-foreground">{activeGoalsCount}</p>
+            <p className="text-3xl font-bold gradient-text">{activeGoalsCount}</p>
           </Card>
-          <Card className="p-6 bg-card border-cyan/30 animate-fade-in">
-            <div className="text-4xl mb-2">🏆</div>
+          <Card className="glass-card glass-card-hover gradient-border p-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            <div className="text-4xl mb-2 float-animation" style={{ animationDelay: '1.5s' }}>🏆</div>
             <p className="text-muted-foreground text-sm mb-1">Total Workouts</p>
-            <p className="text-3xl font-bold text-foreground">{totalWorkouts}</p>
+            <p className="text-3xl font-bold gradient-text">{totalWorkouts}</p>
           </Card>
         </div>
 
@@ -181,7 +181,7 @@ const Dashboard = () => {
             {quickActions.map((action, index) => (
               <Card
                 key={index}
-                className="p-6 cursor-pointer transition-all hover:scale-105 border-2 hover:shadow-lg"
+                className="glass-card glass-card-hover p-6 cursor-pointer"
                 onClick={action.onClick}
               >
                 <action.icon className={`w-8 h-8 mb-3 mx-auto text-${action.color}`} />
@@ -213,7 +213,7 @@ const Dashboard = () => {
                 return (
                   <Card 
                     key={goal.id} 
-                    className="border-border bg-card shadow-[var(--shadow-card)] cursor-pointer transition-all hover:scale-105"
+                    className="glass-card glass-card-hover cursor-pointer"
                     onClick={() => navigate('/goals')}
                   >
                     <CardHeader>
@@ -245,14 +245,14 @@ const Dashboard = () => {
               })}
             </div>
           ) : (
-            <Card className="p-8 bg-card border-purple/30">
+            <Card className="glass-card p-8">
               <div className="text-center">
-                <Target className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <Target className="h-16 w-16 text-cyan mx-auto mb-4 float-animation" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No Active Goals</h3>
                 <p className="text-muted-foreground mb-4">Create your first goal to start tracking your progress</p>
                 <Button 
                   onClick={() => navigate('/goals')}
-                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90 transition-all"
                 >
                   Create Goal
                 </Button>
@@ -279,7 +279,7 @@ const Dashboard = () => {
               {workouts.map((workout) => (
                 <Card 
                   key={workout.id} 
-                  className="border-border bg-card shadow-[var(--shadow-card)] cursor-pointer transition-all hover:scale-[1.02]"
+                  className="glass-card glass-card-hover cursor-pointer"
                   onClick={() => navigate('/analytics')}
                 >
                   <div className="p-4 flex items-center justify-between">
@@ -308,14 +308,14 @@ const Dashboard = () => {
               ))}
             </div>
           ) : (
-            <Card className="p-8 bg-card border-cyan/30">
+            <Card className="glass-card p-8">
               <div className="text-center">
-                <Dumbbell className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <Dumbbell className="h-16 w-16 text-cyan mx-auto mb-4 float-animation" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No Workouts Yet</h3>
                 <p className="text-muted-foreground mb-4">Start logging your workouts to track your progress</p>
                 <Button 
                   onClick={() => navigate('/workout/log')}
-                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90 transition-all"
                 >
                   Log Your First Workout
                 </Button>
