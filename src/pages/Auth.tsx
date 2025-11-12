@@ -133,9 +133,9 @@ const Auth = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="beginner">Beginner - $10/month</SelectItem>
+                      <SelectItem value="intermediate">Fitness Athlete - $30 upfront + $30/month</SelectItem>
+                      <SelectItem value="advanced">Fitness Boss - $100 upfront + $50/month</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
