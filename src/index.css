@@ -161,7 +161,7 @@ All colors MUST be HSL.
   
   /* Quick Action Buttons */
   .quick-action {
-    @apply glass-card p-6 cursor-pointer transition-all relative group;
+    @apply glass-card p-6 cursor-pointer transition-all relative;
   }
   
   .quick-action:hover {
