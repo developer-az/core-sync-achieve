@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import WorkoutLog from "./pages/WorkoutLog";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,9 +43,7 @@ const App = () => (
               {/* Placeholder Protected Routes for Future Features */}
               <Route path="/workout/log" element={
                 <ProtectedRoute>
-                  <div className="min-h-screen bg-background flex items-center justify-center">
-                    <p className="text-foreground">Workout Logging - Coming Soon</p>
-                  </div>
+                  <WorkoutLog />
                 </ProtectedRoute>
               } />
               <Route path="/goals" element={

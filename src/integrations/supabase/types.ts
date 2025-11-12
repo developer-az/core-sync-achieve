@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      exercises: {
+        Row: {
+          calories_burned: number
+          created_at: string
+          duration: number | null
+          id: string
+          name: string
+          reps: number | null
+          sets: number | null
+          type: Database["public"]["Enums"]["exercise_type"]
+          weight: number | null
+          workout_id: string
+        }
+        Insert: {
+          calories_burned?: number
+          created_at?: string
+          duration?: number | null
+          id?: string
+          name: string
+          reps?: number | null
+          sets?: number | null
+          type: Database["public"]["Enums"]["exercise_type"]
+          weight?: number | null
+          workout_id: string
+        }
+        Update: {
+          calories_burned?: number
+          created_at?: string
+          duration?: number | null
+          id?: string
+          name?: string
+          reps?: number | null
+          sets?: number | null
+          type?: Database["public"]["Enums"]["exercise_type"]
+          weight?: number | null
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercises_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -44,6 +91,47 @@ export type Database = {
         }
         Relationships: []
       }
+      workouts: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          total_calories: number
+          total_duration: number
+          updated_at: string
+          user_id: string
+          workout_date: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          total_calories?: number
+          total_duration?: number
+          updated_at?: string
+          user_id: string
+          workout_date?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          total_calories?: number
+          total_duration?: number
+          updated_at?: string
+          user_id?: string
+          workout_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workouts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -52,6 +140,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      exercise_type: "cardio" | "strength" | "flexibility"
       fitness_level: "beginner" | "intermediate" | "advanced"
     }
     CompositeTypes: {
@@ -180,6 +269,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      exercise_type: ["cardio", "strength", "flexibility"],
       fitness_level: ["beginner", "intermediate", "advanced"],
     },
   },
