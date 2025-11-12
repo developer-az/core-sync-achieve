@@ -8,22 +8,22 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 226 58% 10%;
     --foreground: 0 0% 100%;
 
-    --card: 228 34% 8%;
+    --card: 228 34% 17%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 228 34% 8%;
+    --popover: 228 34% 17%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 189 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 226 58% 10%;
 
-    --secondary: 228 34% 12%;
+    --secondary: 228 34% 17%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 228 30% 15%;
+    --muted: 228 30% 25%;
     --muted-foreground: 220 13% 69%;
 
     --accent: 270 100% 64%;
@@ -32,44 +32,32 @@ All colors MUST be HSL.
     --destructive: 331 100% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 228 30% 18%;
-    --input: 228 34% 12%;
+    --border: 228 30% 25%;
+    --input: 228 34% 20%;
     --ring: 189 100% 50%;
 
-    --radius: 1.5rem;
+    --radius: 1rem;
 
     /* CoreSync custom colors */
     --cyan: 189 100% 50%;
-    --cyan-glow: 189 100% 70%;
     --purple: 270 100% 64%;
-    --purple-glow: 270 100% 75%;
     --pink: 331 100% 65%;
-    --pink-glow: 331 100% 75%;
-    --green: 158 64% 52%;
-    --green-glow: 158 64% 65%;
-    
-    /* Modern Gradients */
+    --navy: 226 58% 10%;
+    --navy-light: 228 34% 17%;
+    --navy-lighter: 228 30% 25%;
+
+    /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(189 100% 50%) 0%, hsl(270 100% 64%) 100%);
     --gradient-secondary: linear-gradient(135deg, hsl(270 100% 64%) 0%, hsl(331 100% 65%) 100%);
-    --gradient-tertiary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(189 100% 50%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(228 34% 5%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(228 34% 10% / 0.6) 0%, hsl(228 34% 8% / 0.4) 100%);
-    
-    /* Glass morphism */
-    --glass-bg: hsl(228 34% 12% / 0.4);
-    --glass-border: hsl(0 0% 100% / 0.1);
+    --gradient-hero: linear-gradient(180deg, hsl(226 58% 10%) 0%, hsl(228 34% 17%) 100%);
     
     /* Shadows with glow */
-    --shadow-cyan: 0 0 60px hsl(189 100% 50% / 0.4);
-    --shadow-purple: 0 0 60px hsl(270 100% 64% / 0.4);
-    --shadow-pink: 0 0 60px hsl(331 100% 65% / 0.4);
-    --shadow-green: 0 0 60px hsl(158 64% 52% / 0.4);
-    --shadow-card: 0 20px 50px -20px hsl(0 0% 0% / 0.8);
-    --shadow-card-hover: 0 30px 70px -20px hsl(0 0% 0% / 0.9), 0 0 40px hsl(189 100% 50% / 0.2);
+    --shadow-cyan: 0 0 40px hsl(189 100% 50% / 0.3);
+    --shadow-purple: 0 0 40px hsl(270 100% 64% / 0.3);
+    --shadow-card: 0 10px 30px -10px hsl(0 0% 0% / 0.5);
     
     /* Animations */
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -80,189 +68,9 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(228 34% 3%) 100%);
-    background-attachment: fixed;
   }
 
   html {
     scroll-behavior: smooth;
-  }
-}
-
-@layer components {
-  /* Glass Card */
-  .glass-card {
-    @apply backdrop-blur-xl border shadow-[var(--shadow-card)];
-    background: hsl(228 34% 12% / 0.6);
-    border-color: hsl(0 0% 100% / 0.1);
-    transition: var(--transition-smooth);
-  }
-  
-  .glass-card:hover {
-    @apply shadow-[var(--shadow-card-hover)] scale-[1.02];
-    border-color: hsl(var(--cyan) / 0.3);
-  }
-  
-  /* Gradient Border Cards */
-  .gradient-border {
-    position: relative;
-    background: hsl(228 34% 8%);
-    border-radius: var(--radius);
-    overflow: visible;
-  }
-  
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    padding: 2px;
-    background: var(--gradient-primary);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 0;
-  }
-  
-  .gradient-border > * {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .gradient-border-purple::before {
-    background: var(--gradient-secondary);
-  }
-  
-  .gradient-border-green::before {
-    background: var(--gradient-tertiary);
-  }
-  
-  /* Stat Card with Glow */
-  .stat-card {
-    @apply p-6 relative overflow-hidden backdrop-blur-xl border;
-    background: hsl(228 34% 10% / 0.8);
-    border-color: hsl(0 0% 100% / 0.1);
-    box-shadow: var(--shadow-card);
-  }
-  
-  .stat-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, hsl(var(--cyan) / 0.15) 0%, transparent 70%);
-    animation: pulse 3s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-  
-  .stat-card > * {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .stat-card-purple::after {
-    background: radial-gradient(circle, hsl(var(--purple) / 0.15) 0%, transparent 70%);
-  }
-  
-  .stat-card-pink::after {
-    background: radial-gradient(circle, hsl(var(--pink) / 0.15) 0%, transparent 70%);
-  }
-  
-  .stat-card-green::after {
-    background: radial-gradient(circle, hsl(var(--green) / 0.15) 0%, transparent 70%);
-  }
-  
-  /* Quick Action Buttons */
-  .quick-action {
-    @apply p-6 cursor-pointer transition-all relative backdrop-blur-xl border;
-    background: hsl(228 34% 12% / 0.6);
-    border-color: hsl(0 0% 100% / 0.1);
-    box-shadow: var(--shadow-card);
-  }
-  
-  .quick-action:hover {
-    @apply scale-110 rotate-2;
-    box-shadow: var(--shadow-card-hover);
-  }
-  
-  .quick-action::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    padding: 1px;
-    background: linear-gradient(135deg, hsl(var(--cyan) / 0.5), hsl(var(--purple) / 0.5));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 0;
-  }
-  
-  .quick-action > * {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .quick-action:hover::before {
-    opacity: 1;
-  }
-  
-  /* Animated Number */
-  @keyframes countUp {
-    from {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  .animate-count {
-    animation: countUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
-  
-  /* Floating Animation */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  /* Shimmer Effect */
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-  
-  .shimmer {
-    background: linear-gradient(90deg, transparent, hsl(var(--cyan) / 0.1), transparent);
-    background-size: 1000px 100%;
-    animation: shimmer 3s infinite;
-  }
-  
-  /* Progress Bar Gradient */
-  .progress-gradient {
-    background: var(--gradient-primary);
-    box-shadow: 0 0 20px hsl(var(--cyan) / 0.5);
   }
 }

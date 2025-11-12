@@ -125,83 +125,53 @@ const Dashboard = () => {
   const totalWorkouts = workouts.length;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-24 pb-16 max-w-7xl">
-        {/* Welcome Header with Gradient */}
-        <div className="mb-12 text-center">
-          <h1 className="text-6xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan via-purple to-pink animate-fade-in">
+      <main className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
+        {/* Welcome Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             Welcome back! 👋
           </h1>
-          <p className="text-xl text-muted-foreground animate-fade-in">
+          <p className="text-muted-foreground">
             Ready to crush your fitness goals today?
           </p>
         </div>
 
-        {/* Quick Stats - Modern Cards with Gradient Borders */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <div className="gradient-border animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <div className="stat-card">
-              <div className="relative z-10">
-                <div className="text-5xl mb-3 animate-float">💪</div>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Workouts This Week</p>
-                <p className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan to-purple animate-count">
-                  {workoutsThisWeek}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="gradient-border gradient-border-purple animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="stat-card stat-card-purple">
-              <div className="relative z-10">
-                <div className="text-5xl mb-3 animate-float" style={{ animationDelay: '0.5s' }}>🔥</div>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Current Streak</p>
-                <p className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple to-pink animate-count">
-                  {currentStreak}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">days</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="gradient-border animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <div className="stat-card stat-card-pink">
-              <div className="relative z-10">
-                <div className="text-5xl mb-3 animate-float" style={{ animationDelay: '1s' }}>🎯</div>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Active Goals</p>
-                <p className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink to-cyan animate-count">
-                  {activeGoalsCount}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="gradient-border gradient-border-green animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <div className="stat-card stat-card-green">
-              <div className="relative z-10">
-                <div className="text-5xl mb-3 animate-float" style={{ animationDelay: '1.5s' }}>🏆</div>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Total Workouts</p>
-                <p className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green to-cyan animate-count">
-                  {totalWorkouts}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="p-6 bg-card border-cyan/30 animate-fade-in">
+            <div className="text-4xl mb-2">💪</div>
+            <p className="text-muted-foreground text-sm mb-1">Workouts This Week</p>
+            <p className="text-3xl font-bold text-foreground">{workoutsThisWeek}</p>
+          </Card>
+          <Card className="p-6 bg-card border-purple/30 animate-fade-in">
+            <div className="text-4xl mb-2">🔥</div>
+            <p className="text-muted-foreground text-sm mb-1">Current Streak</p>
+            <p className="text-3xl font-bold text-foreground">{currentStreak} days</p>
+          </Card>
+          <Card className="p-6 bg-card border-pink/30 animate-fade-in">
+            <div className="text-4xl mb-2">🎯</div>
+            <p className="text-muted-foreground text-sm mb-1">Active Goals</p>
+            <p className="text-3xl font-bold text-foreground">{activeGoalsCount}</p>
+          </Card>
+          <Card className="p-6 bg-card border-cyan/30 animate-fade-in">
+            <div className="text-4xl mb-2">🏆</div>
+            <p className="text-muted-foreground text-sm mb-1">Total Workouts</p>
+            <p className="text-3xl font-bold text-foreground">{totalWorkouts}</p>
+          </Card>
         </div>
 
-        {/* Quick Actions - Creative Layout */}
-        <div className="mb-16">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan to-purple">
-              Quick Actions
-            </h2>
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-foreground">Quick Actions</h2>
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => navigate('/settings')}
-              className="gap-2 hover:bg-white/5"
+              className="gap-2"
             >
               <Settings className="w-4 h-4" />
               Settings
@@ -209,32 +179,26 @@ const Dashboard = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {quickActions.map((action, index) => (
-              <div
+              <Card
                 key={index}
-                className="quick-action animate-fade-in"
-                style={{ animationDelay: `${0.5 + index * 0.1}s` }}
+                className="p-6 cursor-pointer transition-all hover:scale-105 border-2 hover:shadow-lg"
                 onClick={action.onClick}
               >
-                <div className="relative z-10">
-                  <action.icon className={`w-10 h-10 mb-4 mx-auto text-${action.color} drop-shadow-[0_0_10px_hsl(var(--${action.color})/0.5)]`} />
-                  <p className="text-foreground text-sm font-semibold text-center">{action.label}</p>
-                </div>
-              </div>
+                <action.icon className={`w-8 h-8 mb-3 mx-auto text-${action.color}`} />
+                <p className="text-foreground text-sm font-medium text-center">{action.label}</p>
+              </Card>
             ))}
           </div>
         </div>
 
-        {/* Active Goals Section - Gradient Cards */}
-        <div className="mb-16">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple to-pink">
-              Active Goals
-            </h2>
+        {/* Active Goals Section */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-foreground">Active Goals</h2>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate('/goals')}
-              className="border-purple/30 hover:bg-purple/10"
             >
               View All
             </Button>
@@ -242,150 +206,121 @@ const Dashboard = () => {
           
           {goals.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {goals.map((goal, index) => {
+              {goals.map((goal) => {
                 const progress = Math.min((goal.current_value / goal.target_value) * 100, 100);
                 const daysRemaining = Math.ceil((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                 
                 return (
-                  <div
-                    key={goal.id}
-                    className="gradient-border gradient-border-purple cursor-pointer animate-fade-in hover:scale-105 transition-transform"
-                    style={{ animationDelay: `${1.1 + index * 0.1}s` }}
+                  <Card 
+                    key={goal.id} 
+                    className="border-border bg-card shadow-[var(--shadow-card)] cursor-pointer transition-all hover:scale-105"
                     onClick={() => navigate('/goals')}
                   >
-                    <div className="glass-card p-6">
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple to-pink flex items-center justify-center flex-shrink-0 shadow-[var(--shadow-purple)]">
-                          <Target className="h-6 w-6 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-lg text-foreground mb-1">{goal.title}</h3>
-                          <p className="text-sm text-muted-foreground">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-foreground">
+                        <Target className="h-5 w-5 text-cyan" />
+                        {goal.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="font-medium text-foreground">
                             {goal.current_value} / {goal.target_value} {goal.unit}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="relative h-3 bg-muted/20 rounded-full overflow-hidden">
-                          <div
-                            className="progress-gradient h-full rounded-full transition-all duration-1000"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-bold text-purple">
-                            {Math.round(progress)}% Complete
                           </span>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            <span>{daysRemaining > 0 ? `${daysRemaining}d` : 'Overdue'}</span>
-                          </div>
                         </div>
+                        <Progress value={progress} className="h-2" />
+                        <p className="text-xs text-center text-cyan font-medium">
+                          {Math.round(progress)}% Complete
+                        </p>
                       </div>
-                    </div>
-                  </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground border-t border-border pt-3">
+                        <Calendar className="h-4 w-4" />
+                        <span>{daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Overdue'}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
           ) : (
-            <div className="gradient-border">
-              <div className="glass-card p-12">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-purple to-pink flex items-center justify-center shadow-[var(--shadow-purple)]">
-                    <Target className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">No Active Goals</h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Create your first goal to start tracking your progress and unlock achievements
-                  </p>
-                  <Button 
-                    onClick={() => navigate('/goals')}
-                    className="bg-gradient-to-r from-purple to-pink hover:opacity-90 shadow-[var(--shadow-purple)] text-lg px-8 py-6"
-                  >
-                    <Target className="mr-2 h-5 w-5" />
-                    Create Your First Goal
-                  </Button>
-                </div>
+            <Card className="p-8 bg-card border-purple/30">
+              <div className="text-center">
+                <Target className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No Active Goals</h3>
+                <p className="text-muted-foreground mb-4">Create your first goal to start tracking your progress</p>
+                <Button 
+                  onClick={() => navigate('/goals')}
+                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                >
+                  Create Goal
+                </Button>
               </div>
-            </div>
+            </Card>
           )}
         </div>
         
-        {/* Recent Workouts Section - Timeline Style */}
+        {/* Recent Workouts Section */}
         <div>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan to-green">
-              Recent Workouts
-            </h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-foreground">Recent Workouts</h2>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate('/analytics')}
-              className="border-cyan/30 hover:bg-cyan/10"
             >
               View Analytics
             </Button>
           </div>
           
           {workouts.length > 0 ? (
-            <div className="space-y-4">
-              {workouts.map((workout, index) => (
-                <div
-                  key={workout.id}
-                  className="gradient-border animate-fade-in cursor-pointer"
-                  style={{ animationDelay: `${1.4 + index * 0.1}s` }}
+            <div className="space-y-3">
+              {workouts.map((workout) => (
+                <Card 
+                  key={workout.id} 
+                  className="border-border bg-card shadow-[var(--shadow-card)] cursor-pointer transition-all hover:scale-[1.02]"
                   onClick={() => navigate('/analytics')}
                 >
-                  <div className="glass-card p-6 flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan via-purple to-pink flex items-center justify-center flex-shrink-0 shadow-[var(--shadow-cyan)] animate-float">
-                      <Dumbbell className="h-8 w-8 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-lg text-foreground mb-1">
-                        {format(parseISO(workout.workout_date), 'EEEE, MMMM d, yyyy')}
-                      </p>
-                      <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-cyan shadow-[0_0_10px_hsl(var(--cyan))]" />
-                          <span className="text-sm text-muted-foreground">
-                            {workout.total_duration} minutes
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-purple shadow-[0_0_10px_hsl(var(--purple))]" />
-                          <span className="text-sm text-muted-foreground">
-                            {workout.total_calories} calories
-                          </span>
+                  <div className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan to-purple flex items-center justify-center">
+                        <Dumbbell className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {format(parseISO(workout.workout_date), 'EEEE, MMMM d, yyyy')}
+                        </p>
+                        <div className="flex items-center gap-4 mt-1">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            <span>{workout.total_duration} min</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>{workout.total_calories} cal</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <TrendingUp className="h-6 w-6 text-green" />
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           ) : (
-            <div className="gradient-border gradient-border-green">
-              <div className="glass-card p-12">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-cyan to-green flex items-center justify-center shadow-[var(--shadow-cyan)]">
-                    <Dumbbell className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">No Workouts Yet</h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Start logging your workouts to track your progress and build your streak
-                  </p>
-                  <Button 
-                    onClick={() => navigate('/workout/log')}
-                    className="bg-gradient-to-r from-cyan to-purple hover:opacity-90 shadow-[var(--shadow-cyan)] text-lg px-8 py-6"
-                  >
-                    <Dumbbell className="mr-2 h-5 w-5" />
-                    Log Your First Workout
-                  </Button>
-                </div>
+            <Card className="p-8 bg-card border-cyan/30">
+              <div className="text-center">
+                <Dumbbell className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No Workouts Yet</h3>
+                <p className="text-muted-foreground mb-4">Start logging your workouts to track your progress</p>
+                <Button 
+                  onClick={() => navigate('/workout/log')}
+                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                >
+                  Log Your First Workout
+                </Button>
               </div>
-            </div>
+            </Card>
           )}
         </div>
       </main>
