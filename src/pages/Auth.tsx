@@ -40,8 +40,8 @@ const Auth = () => {
     if (username.length < 3) {
       return 'Username must be at least 3 characters';
     }
-    if (username.length > 12) {
-      return 'Username cannot exceed 12 characters';
+    if (username.length > 16) {
+      return 'Username cannot exceed 16 characters';
     }
     // Only allow letters and spaces
     const usernameRegex = /^[a-zA-Z\s]+$/;
@@ -166,11 +166,11 @@ const Auth = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required={isSignUp}
-                    maxLength={12}
+                    maxLength={16}
                     disabled={isLoading}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Only letters and spaces, 3-12 characters
+                    Only letters and spaces, 3-16 characters
                   </p>
                 </div>
               )}

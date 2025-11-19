@@ -69,8 +69,8 @@ const Settings = () => {
     if (username.length < 3) {
       return 'Username must be at least 3 characters';
     }
-    if (username.length > 12) {
-      return 'Username cannot exceed 12 characters';
+    if (username.length > 16) {
+      return 'Username cannot exceed 16 characters';
     }
     // Only allow letters and spaces
     const usernameRegex = /^[a-zA-Z\s]+$/;
@@ -220,7 +220,7 @@ const Settings = () => {
                       value={tempUsername}
                       onChange={(e) => setTempUsername(e.target.value)}
                       placeholder="Enter username"
-                      maxLength={12}
+                      maxLength={16}
                       className="flex-1"
                       disabled={loading}
                     />
@@ -247,7 +247,7 @@ const Settings = () => {
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground mt-1">
-                  Only letters and spaces allowed, max 12 characters
+                  Only letters and spaces allowed, max 16 characters
                 </p>
               </div>
 
