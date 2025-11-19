@@ -455,24 +455,84 @@ const Settings = () => {
                     <Database className="w-4 h-4 text-cyan" />
                     Tasks Retrieved from Express API:
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {tasks.map((task: any, index: number) => (
                       <div 
                         key={index} 
-                        className="p-3 bg-background/50 rounded border border-border/30 hover:border-cyan/30 transition-colors"
+                        className="p-4 bg-background/50 rounded-lg border border-border/30 hover:border-cyan/30 transition-colors"
                       >
-                        <p className="text-sm text-foreground font-medium">
-                          {task.title || task.name || `Task ${index + 1}`}
-                        </p>
+                        <div className="flex items-start justify-between mb-2">
+                          <p className="text-sm text-foreground font-semibold">
+                            {task.title || task.name || task.exercise || `Workout ${index + 1}`}
+                          </p>
+                          {task.id && (
+                            <code className="text-xs text-cyan/70 px-2 py-0.5 bg-cyan/10 rounded">
+                              ID: {task.id}
+                            </code>
+                          )}
+                        </div>
+                        
                         {task.description && (
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mb-2">
                             {task.description}
                           </p>
                         )}
-                        {task.id && (
-                          <code className="text-xs text-cyan/70 mt-1 block">
-                            ID: {task.id}
-                          </code>
+                        
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          {task.reps && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Reps:</span>
+                              <span className="text-foreground font-medium">{task.reps}</span>
+                            </div>
+                          )}
+                          {task.sets && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Sets:</span>
+                              <span className="text-foreground font-medium">{task.sets}</span>
+                            </div>
+                          )}
+                          {task.duration && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Duration:</span>
+                              <span className="text-foreground font-medium">{task.duration}</span>
+                            </div>
+                          )}
+                          {task.time && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Time:</span>
+                              <span className="text-foreground font-medium">{task.time}</span>
+                            </div>
+                          )}
+                          {task.type && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Type:</span>
+                              <span className="text-cyan font-medium capitalize">{task.type}</span>
+                            </div>
+                          )}
+                          {task.weight && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Weight:</span>
+                              <span className="text-foreground font-medium">{task.weight}</span>
+                            </div>
+                          )}
+                          {task.calories && (
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="text-muted-foreground">Calories:</span>
+                              <span className="text-purple font-medium">{task.calories}</span>
+                            </div>
+                          )}
+                          {task.date && (
+                            <div className="flex items-center gap-1.5 text-xs col-span-2">
+                              <span className="text-muted-foreground">Date:</span>
+                              <span className="text-foreground font-medium">{task.date}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {task.notes && (
+                          <p className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border/50">
+                            {task.notes}
+                          </p>
                         )}
                       </div>
                     ))}
