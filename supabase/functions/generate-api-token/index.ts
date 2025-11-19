@@ -39,12 +39,18 @@ serve(async (req) => {
       });
     }
 
+    // Create client with service role key for database operations
     const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false }
+    });
+
+    // Verify JWT and get user separately
+    const anonSupabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
       auth: { persistSession: false },
       global: { headers: { Authorization: authHeader } },
     });
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    const { data: { user }, error: authError } = await anonSupabase.auth.getUser();
     if (authError || !user) {
       console.error('Auth error:', authError);
       return new Response(JSON.stringify({ error: 'Invalid authorization token' }), {

@@ -35,12 +35,12 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const quickActions = [
-    { icon: Dumbbell, label: 'Log Workout', color: 'cyan', onClick: () => navigate('/workout/log') },
-    { icon: Target, label: 'My Goals', color: 'purple', onClick: () => navigate('/goals') },
-    { icon: Trophy, label: 'Achievements', color: 'pink', onClick: () => navigate('/achievements') },
-    { icon: TrendingUp, label: 'Analytics', color: 'cyan', onClick: () => navigate('/analytics') },
-    { icon: Users, label: 'Leaderboard', color: 'purple', onClick: () => navigate('/leaderboard') },
-    { icon: Zap, label: 'Recommendations', color: 'pink', onClick: () => navigate('/recommendations') },
+    { icon: Dumbbell, label: 'Log Workout', path: '/workout/log' },
+    { icon: Target, label: 'My Goals', path: '/goals' },
+    { icon: Trophy, label: 'Achievements', path: '/achievements' },
+    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
+    { icon: Users, label: 'Leaderboard', path: '/leaderboard' },
+    { icon: Zap, label: 'Recommendations', path: '/recommendations' },
   ];
 
   useEffect(() => {
@@ -164,11 +164,11 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+        <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50 max-w-3xl mx-auto mb-8">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-foreground">Quick Actions</h2>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => navigate('/settings')}
               className="gap-2"
@@ -177,19 +177,24 @@ const Dashboard = () => {
               Settings
             </Button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {quickActions.map((action, index) => (
-              <Card
-                key={index}
-                className="glass-card glass-card-hover p-6 cursor-pointer"
-                onClick={action.onClick}
+          <div className="grid grid-cols-2 gap-4">
+            {quickActions.map((action) => (
+              <Button
+                key={action.path}
+                onClick={(e) => {
+                  const button = e.currentTarget;
+                  button.classList.add('animate-scale-out');
+                  setTimeout(() => navigate(action.path), 200);
+                }}
+                variant="outline"
+                className="h-32 flex flex-col gap-3 hover:bg-primary/10 hover:border-primary/50 transition-all hover:scale-105 active:scale-95 group"
               >
-                <action.icon className={`w-8 h-8 mb-3 mx-auto text-${action.color}`} />
-                <p className="text-foreground text-sm font-medium text-center">{action.label}</p>
-              </Card>
+                <action.icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+                <span className="text-base font-medium">{action.label}</span>
+              </Button>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Active Goals Section */}
         <div className="mb-8">
