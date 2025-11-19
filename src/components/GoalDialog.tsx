@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface GoalDialogProps {
   open: boolean;
@@ -69,6 +70,29 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Enhanced validation
+    if (!formData.title.trim()) {
+      toast.error('❌ Validation Failed: Goal title is required');
+      return;
+    }
+    if (formData.target_value <= 0) {
+      toast.error('❌ Validation Failed: Target value must be greater than 0');
+      return;
+    }
+    if (formData.current_value < 0) {
+      toast.error('❌ Validation Failed: Current value cannot be negative');
+      return;
+    }
+    if (formData.current_value > formData.target_value) {
+      toast.error('❌ Validation Failed: Current value cannot exceed target value');
+      return;
+    }
+    if (formData.deadline < new Date()) {
+      toast.error('❌ Validation Failed: Deadline must be in the future');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       await onSave(formData);
@@ -97,6 +121,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., Complete 30 workouts"
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -108,6 +133,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Add more details about your goal..."
               rows={3}
+              disabled={isLoading}
             />
           </div>
 
@@ -121,6 +147,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
                 value={formData.current_value || ''}
                 onChange={(e) => setFormData({ ...formData, current_value: parseInt(e.target.value) || 0 })}
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -133,6 +160,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
                 value={formData.target_value || ''}
                 onChange={(e) => setFormData({ ...formData, target_value: parseInt(e.target.value) || 0 })}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -145,6 +173,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
               onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
               placeholder="e.g., workouts, minutes, pounds"
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -153,6 +182,7 @@ export const GoalDialog = ({ open, onOpenChange, onSave, goal }: GoalDialogProps
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={isLoading}
                   variant="outline"
                   className={cn(
                     'w-full justify-start text-left font-normal',

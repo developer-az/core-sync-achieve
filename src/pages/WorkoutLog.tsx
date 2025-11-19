@@ -91,11 +91,31 @@ const WorkoutLog = () => {
       return;
     }
 
-    // Validate exercises
+    // Enhanced validation with specific error messages
     const validExercises = exercises.filter(ex => ex.name.trim() !== '');
     if (validExercises.length === 0) {
-      toast.error('Please add at least one exercise with a name');
+      toast.error('❌ Validation Failed: Please add at least one exercise with a name');
       return;
+    }
+
+    // Check for negative or invalid values
+    for (const ex of validExercises) {
+      if (ex.sets !== undefined && ex.sets < 0) {
+        toast.error(`❌ Validation Failed: Sets cannot be negative for "${ex.name}"`);
+        return;
+      }
+      if (ex.reps !== undefined && ex.reps < 0) {
+        toast.error(`❌ Validation Failed: Reps cannot be negative for "${ex.name}"`);
+        return;
+      }
+      if (ex.duration !== undefined && ex.duration < 0) {
+        toast.error(`❌ Validation Failed: Duration cannot be negative for "${ex.name}"`);
+        return;
+      }
+      if (ex.weight !== undefined && ex.weight < 0) {
+        toast.error(`❌ Validation Failed: Weight cannot be negative for "${ex.name}"`);
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -173,15 +193,16 @@ const WorkoutLog = () => {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-medium text-muted-foreground">Exercise {index + 1}</span>
                     {exercises.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeExercise(exercise.id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                       <Button
+                         type="button"
+                         variant="ghost"
+                         size="sm"
+                         onClick={() => removeExercise(exercise.id)}
+                         className="text-destructive hover:text-destructive"
+                         disabled={isLoading}
+                       >
+                         <Trash2 className="h-4 w-4" />
+                       </Button>
                     )}
                   </div>
 
@@ -194,15 +215,17 @@ const WorkoutLog = () => {
                         onChange={(e) => updateExercise(exercise.id, 'name', e.target.value)}
                         placeholder="e.g., Bench Press, Running"
                         required
+                        disabled={isLoading}
                       />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor={`type-${exercise.id}`}>Type *</Label>
-                      <Select
-                        value={exercise.type}
-                        onValueChange={(value) => updateExercise(exercise.id, 'type', value as ExerciseType)}
-                      >
+              <Select
+                value={exercise.type}
+                onValueChange={(value) => updateExercise(exercise.id, 'type', value as ExerciseType)}
+                disabled={isLoading}
+              >
                         <SelectTrigger id={`type-${exercise.id}`}>
                           <SelectValue />
                         </SelectTrigger>
@@ -225,6 +248,7 @@ const WorkoutLog = () => {
                             value={exercise.sets || ''}
                             onChange={(e) => updateExercise(exercise.id, 'sets', parseInt(e.target.value) || 0)}
                             placeholder="0"
+                            disabled={isLoading}
                           />
                         </div>
 
@@ -237,6 +261,7 @@ const WorkoutLog = () => {
                             value={exercise.reps || ''}
                             onChange={(e) => updateExercise(exercise.id, 'reps', parseInt(e.target.value) || 0)}
                             placeholder="0"
+                            disabled={isLoading}
                           />
                         </div>
 
@@ -250,6 +275,7 @@ const WorkoutLog = () => {
                             value={exercise.weight || ''}
                             onChange={(e) => updateExercise(exercise.id, 'weight', parseFloat(e.target.value) || 0)}
                             placeholder="0"
+                            disabled={isLoading}
                           />
                         </div>
                       </>
@@ -264,6 +290,7 @@ const WorkoutLog = () => {
                         value={exercise.duration || ''}
                         onChange={(e) => updateExercise(exercise.id, 'duration', parseInt(e.target.value) || 0)}
                         placeholder="0"
+                        disabled={isLoading}
                       />
                     </div>
 
@@ -282,6 +309,7 @@ const WorkoutLog = () => {
                 variant="outline"
                 onClick={addExercise}
                 className="w-full"
+                disabled={isLoading}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Exercise
@@ -318,6 +346,7 @@ const WorkoutLog = () => {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="How did you feel? Any observations?"
                 rows={4}
+                disabled={isLoading}
               />
             </CardContent>
           </Card>
@@ -329,6 +358,7 @@ const WorkoutLog = () => {
               variant="outline"
               onClick={() => navigate('/dashboard')}
               className="flex-1"
+              disabled={isLoading}
             >
               Cancel
             </Button>
@@ -337,7 +367,14 @@ const WorkoutLog = () => {
               disabled={isLoading}
               className="flex-1 bg-gradient-to-r from-cyan to-purple hover:opacity-90"
             >
-              {isLoading ? 'Saving...' : 'Save Workout'}
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground border-t-transparent mr-2" />
+                  Saving Workout...
+                </>
+              ) : (
+                'Save Workout'
+              )}
             </Button>
           </div>
         </form>

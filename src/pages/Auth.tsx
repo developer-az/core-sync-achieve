@@ -200,6 +200,7 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    disabled={isLoading}
                   />
                 </div>
               )}
@@ -215,6 +216,7 @@ const Auth = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     minLength={6}
+                    disabled={isLoading}
                   />
                 </div>
               )}
@@ -222,8 +224,8 @@ const Auth = () => {
               {!isForgotPassword && !isResetPassword && isSignUp && (
                 <div className="space-y-2">
                   <Label htmlFor="fitnessLevel">Fitness Level</Label>
-                  <Select value={fitnessLevel} onValueChange={setFitnessLevel}>
-                    <SelectTrigger id="fitnessLevel">
+                  <Select value={fitnessLevel} onValueChange={setFitnessLevel} disabled={isLoading}>
+                    <SelectTrigger id="fitnessLevel" disabled={isLoading}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -240,15 +242,20 @@ const Auth = () => {
                 className="w-full bg-gradient-to-r from-cyan to-purple hover:opacity-90"
                 disabled={isLoading}
               >
-                {isLoading 
-                  ? 'Loading...' 
-                  : isForgotPassword 
-                  ? 'Send Reset Link'
-                  : isResetPassword
-                  ? 'Update Password'
-                  : isSignUp 
-                  ? 'Sign Up' 
-                  : 'Sign In'}
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground border-t-transparent mr-2" />
+                    Processing...
+                  </>
+                ) : (
+                  isForgotPassword 
+                    ? 'Send Reset Link'
+                    : isResetPassword
+                    ? 'Update Password'
+                    : isSignUp 
+                    ? 'Sign Up' 
+                    : 'Sign In'
+                )}
               </Button>
             </form>
 
