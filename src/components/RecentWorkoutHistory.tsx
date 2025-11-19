@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Flame, Calendar, Dumbbell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Clock, Flame, Calendar, Dumbbell, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 interface Workout {
   id: string;
@@ -56,6 +58,28 @@ export const RecentWorkoutHistory = ({ userId }: { userId: string }) => {
       console.error('Error fetching recent workouts:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteWorkout = async (workoutId: string) => {
+    if (!confirm('Are you sure you want to delete this workout? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('workouts')
+        .delete()
+        .eq('id', workoutId);
+
+      if (error) throw error;
+
+      toast.success('Workout deleted successfully');
+      // Refresh the list
+      await fetchRecentWorkouts();
+    } catch (error: any) {
+      console.error('Error deleting workout:', error);
+      toast.error(error.message || 'Failed to delete workout');
     }
   };
 
@@ -193,6 +217,19 @@ export const RecentWorkoutHistory = ({ userId }: { userId: string }) => {
                 </p>
               </div>
             )}
+
+            {/* Delete Button */}
+            <div className="mt-3 pt-3 border-t border-border/50">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleDeleteWorkout(workout.id)}
+                className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="w-3 h-3 mr-2" />
+                Delete Workout
+              </Button>
+            </div>
           </div>
         ))}
       </CardContent>

@@ -533,28 +533,28 @@ const Settings = () => {
               <div className="p-4 bg-card/30 rounded-lg border border-border/50">
                 <h3 className="font-medium text-foreground mb-3 flex items-center gap-2">
                   <Plus className="w-4 h-4 text-cyan" />
-                  Create New Task (POST)
+                  Create New Training Task
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <Label htmlFor="newTaskTitle" className="text-sm">Title *</Label>
+                    <Label htmlFor="newTaskTitle" className="text-sm">Task Name *</Label>
                     <Input
                       id="newTaskTitle"
                       value={newTaskTitle}
                       onChange={(e) => setNewTaskTitle(e.target.value)}
-                      placeholder="Enter task title"
+                      placeholder="e.g., Complete 50 push-ups"
                       maxLength={200}
                       disabled={apiLoading || !apiHealthy}
                       className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="newTaskDescription" className="text-sm">Description</Label>
+                    <Label htmlFor="newTaskDescription" className="text-sm">Notes</Label>
                     <Textarea
                       id="newTaskDescription"
                       value={newTaskDescription}
                       onChange={(e) => setNewTaskDescription(e.target.value)}
-                      placeholder="Enter task description (optional)"
+                      placeholder="Add any notes or details (optional)"
                       maxLength={1000}
                       disabled={apiLoading || !apiHealthy}
                       className="mt-1 min-h-[80px]"
@@ -578,7 +578,7 @@ const Settings = () => {
                   className="flex-1 bg-gradient-to-r from-cyan to-purple hover:opacity-90"
                 >
                   <Database className="w-4 h-4 mr-2" />
-                  {apiLoading ? 'Fetching...' : 'Fetch Tasks (GET)'}
+                  {apiLoading ? 'Loading...' : 'Load Training Tasks'}
                 </Button>
               </div>
 
@@ -586,7 +586,7 @@ const Settings = () => {
                 <div className="p-4 bg-card/30 rounded-lg border border-border/50">
                   <h3 className="font-medium text-foreground mb-3 flex items-center gap-2">
                     <Database className="w-4 h-4 text-cyan" />
-                    Tasks Retrieved from Express API:
+                    Training Tasks from API
                   </h3>
                   <div className="space-y-3">
                     {tasks.map((task: any, index: number) => (
@@ -598,24 +598,24 @@ const Settings = () => {
                           /* Edit Mode */
                           <div className="space-y-3">
                             <div>
-                              <Label htmlFor={`editTitle-${task.id}`} className="text-xs">Title *</Label>
+                              <Label htmlFor={`editTitle-${task.id}`} className="text-xs">Task Name *</Label>
                               <Input
                                 id={`editTitle-${task.id}`}
                                 value={editTaskTitle}
                                 onChange={(e) => setEditTaskTitle(e.target.value)}
-                                placeholder="Task title"
+                                placeholder="Task name"
                                 maxLength={200}
                                 disabled={apiLoading}
                                 className="mt-1"
                               />
                             </div>
                             <div>
-                              <Label htmlFor={`editDesc-${task.id}`} className="text-xs">Description</Label>
+                              <Label htmlFor={`editDesc-${task.id}`} className="text-xs">Notes</Label>
                               <Textarea
                                 id={`editDesc-${task.id}`}
                                 value={editTaskDescription}
                                 onChange={(e) => setEditTaskDescription(e.target.value)}
-                                placeholder="Task description"
+                                placeholder="Task notes"
                                 maxLength={1000}
                                 disabled={apiLoading}
                                 className="mt-1 min-h-[60px]"
@@ -629,7 +629,7 @@ const Settings = () => {
                                 className="flex-1 bg-cyan hover:bg-cyan/90"
                               >
                                 <Save className="w-3 h-3 mr-1" />
-                                Save (PATCH)
+                                Save Changes
                               </Button>
                               <Button
                                 size="sm"
@@ -732,7 +732,7 @@ const Settings = () => {
                               className="flex-1 border-cyan/30 hover:bg-cyan/10"
                             >
                               <Edit2 className="w-3 h-3 mr-1" />
-                              Edit (PATCH)
+                              Edit
                             </Button>
                             <Button
                               size="sm"
