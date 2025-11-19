@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Dumbbell, Target, Trophy, TrendingUp, Users, Zap, Settings, Calendar, Clock } from 'lucide-react';
+import { Dumbbell, Target, Trophy, TrendingUp, Users, Zap, Settings, Calendar, Clock, Trash2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { format, parseISO, startOfWeek, isWithinInterval, subDays, startOfDay } from 'date-fns';
 import { toast } from 'sonner';
@@ -95,6 +95,31 @@ const Dashboard = () => {
       toast.error('Failed to load dashboard data');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteWorkout = async (workoutId: string, event: React.MouseEvent) => {
+    // Prevent the card click from navigating
+    event.stopPropagation();
+    
+    if (!confirm('Are you sure you want to delete this workout? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('workouts')
+        .delete()
+        .eq('id', workoutId);
+
+      if (error) throw error;
+
+      toast.success('Workout deleted successfully');
+      // Refresh the workouts list
+      await fetchDashboardData();
+    } catch (error: any) {
+      console.error('Error deleting workout:', error);
+      toast.error(error.message || 'Failed to delete workout');
     }
   };
 
@@ -322,6 +347,15 @@ const Dashboard = () => {
                         </div>
                       </div>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => handleDeleteWorkout(workout.id, e)}
+                      className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-3"
+                    >
+                      <Trash2 className="w-3 h-3 mr-1" />
+                      Delete
+                    </Button>
                   </div>
                 </Card>
               ))}

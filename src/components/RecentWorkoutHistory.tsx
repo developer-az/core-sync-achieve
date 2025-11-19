@@ -224,10 +224,10 @@ export const RecentWorkoutHistory = ({ userId }: { userId: string }) => {
                 size="sm"
                 variant="ghost"
                 onClick={() => handleDeleteWorkout(workout.id)}
-                className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-7"
               >
-                <Trash2 className="w-3 h-3 mr-2" />
-                Delete Workout
+                <Trash2 className="w-3 h-3 mr-1" />
+                Delete
               </Button>
             </div>
           </div>
