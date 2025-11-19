@@ -1,1 +1,4 @@
 project_id = "jqsgqnamltsmsqxkligt"
+
+[functions.log-external-workout]
+verify_jwt = false

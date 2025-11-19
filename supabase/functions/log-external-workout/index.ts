@@ -28,8 +28,16 @@ serve(async (req) => {
     
     let userId: string | null = null;
 
-    // Check for API token first (X-API-Token header)
-    const apiTokenHeader = req.headers.get('X-API-Token');
+    // Check for API token first (X-API-Token header) - case insensitive
+    const apiTokenHeader = 
+      req.headers.get('X-API-Token') ??
+      req.headers.get('x-api-token') ??
+      Array.from(req.headers.entries()).find(([key]) => 
+        key.toLowerCase() === 'x-api-token'
+      )?.[1];
+    
+    console.log('Incoming headers:', Array.from(req.headers.entries()));
+    console.log('API Token Header value:', apiTokenHeader ? 'Found' : 'Not found');
     
     if (apiTokenHeader && apiTokenHeader.startsWith('cs_')) {
       // API Token authentication
@@ -67,10 +75,11 @@ serve(async (req) => {
         .eq('token_hash', tokenHash);
 
     } else {
+      console.log('No API token header found, falling back to JWT auth');
       // Fall back to JWT authentication
       const authHeader = req.headers.get('Authorization');
       if (!authHeader) {
-        return new Response(JSON.stringify({ error: 'Missing authentication' }), {
+        return new Response(JSON.stringify({ error: 'Missing authentication. Provide either X-API-Token header (for external integrations) or Authorization header (for web app)' }), {
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
