@@ -11,10 +11,11 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Navbar from '@/components/Navbar';
-import { ArrowLeft, Moon, Sun, Edit2, Check, X, Crown } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Edit2, Check, X, Crown, Link2, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TokenManagement } from '@/components/TokenManagement';
 import { SubscriptionModal } from '@/components/SubscriptionModal';
+import { fetchTasks, checkApiHealth } from '@/lib/expressApi';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -24,6 +25,11 @@ const Settings = () => {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [tempUsername, setTempUsername] = useState('');
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  
+  // Express API Demo state
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [apiLoading, setApiLoading] = useState(false);
+  const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
   
   const [profile, setProfile] = useState({
     username: '',
@@ -63,6 +69,22 @@ const Settings = () => {
 
     fetchProfile();
   }, [user]);
+
+  // Check Express API health on mount
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const response = await checkApiHealth();
+        setApiHealthy(true);
+        console.log('Express API is healthy:', response);
+      } catch (error) {
+        setApiHealthy(false);
+        console.error('Express API health check failed:', error);
+      }
+    };
+
+    checkHealth();
+  }, []);
 
   const validateUsername = (username: string): string | null => {
     if (!username || username.trim().length === 0) {
@@ -142,6 +164,19 @@ const Settings = () => {
       toast.error(error.message || 'Failed to update profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFetchTasks = async () => {
+    setApiLoading(true);
+    try {
+      const data = await fetchTasks();
+      setTasks(data);
+      toast.success('Tasks fetched successfully from Express API!');
+    } catch (error) {
+      toast.error('Failed to fetch tasks from Express API');
+    } finally {
+      setApiLoading(false);
     }
   };
 
@@ -372,6 +407,88 @@ const Settings = () => {
                     </>
                   )}
                 </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Express API Integration Demo (WEB103 Final) */}
+          <Card className="p-6 border-cyan/30 bg-gradient-to-br from-cyan/5 to-purple/5">
+            <div className="flex items-center gap-2 mb-4">
+              <Link2 className="h-6 w-6 text-cyan" />
+              <h2 className="text-2xl font-semibold text-foreground">Express API Demo</h2>
+              <span className="text-xs bg-purple/20 text-purple px-2 py-1 rounded-full">WEB103 Final</span>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-card/50 rounded-lg border border-border">
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-sm font-medium">API Base URL</Label>
+                  {apiHealthy !== null && (
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      apiHealthy 
+                        ? 'bg-cyan/20 text-cyan' 
+                        : 'bg-destructive/20 text-destructive'
+                    }`}>
+                      {apiHealthy ? '✓ Connected' : '✗ Offline'}
+                    </span>
+                  )}
+                </div>
+                <code className="text-xs text-muted-foreground break-all">
+                  {import.meta.env.VITE_API_BASE_URL || 'Not configured'}
+                </code>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handleFetchTasks}
+                  disabled={apiLoading || !apiHealthy}
+                  className="flex-1 bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                >
+                  <Database className="w-4 h-4 mr-2" />
+                  {apiLoading ? 'Fetching...' : 'Fetch Tasks from Express API'}
+                </Button>
+              </div>
+
+              {tasks.length > 0 && (
+                <div className="p-4 bg-card/30 rounded-lg border border-border/50">
+                  <h3 className="font-medium text-foreground mb-3 flex items-center gap-2">
+                    <Database className="w-4 h-4 text-cyan" />
+                    Tasks Retrieved from Express API:
+                  </h3>
+                  <div className="space-y-2">
+                    {tasks.map((task: any, index: number) => (
+                      <div 
+                        key={index} 
+                        className="p-3 bg-background/50 rounded border border-border/30 hover:border-cyan/30 transition-colors"
+                      >
+                        <p className="text-sm text-foreground font-medium">
+                          {task.title || task.name || `Task ${index + 1}`}
+                        </p>
+                        {task.description && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {task.description}
+                          </p>
+                        )}
+                        {task.id && (
+                          <code className="text-xs text-cyan/70 mt-1 block">
+                            ID: {task.id}
+                          </code>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3 italic">
+                    Check browser console for full API response details
+                  </p>
+                </div>
+              )}
+
+              <div className="p-3 bg-muted/50 rounded-lg border border-border/30">
+                <p className="text-xs text-muted-foreground">
+                  <strong className="text-foreground">Demo Purpose:</strong> This section demonstrates 
+                  the integration between the React frontend and Express.js backend API hosted on Render, 
+                  fulfilling the RESTful API requirement for WEB103 final project.
+                </p>
               </div>
             </div>
           </Card>
