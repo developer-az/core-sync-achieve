@@ -44,13 +44,10 @@ serve(async (req) => {
       auth: { persistSession: false }
     });
 
-    // Verify JWT and get user separately
-    const anonSupabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
-      auth: { persistSession: false },
-      global: { headers: { Authorization: authHeader } },
-    });
+    // Verify the JWT token and get user
+    const jwtToken = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwtToken);
     
-    const { data: { user }, error: authError } = await anonSupabase.auth.getUser();
     if (authError || !user) {
       console.error('Auth error:', authError);
       return new Response(JSON.stringify({ error: 'Invalid authorization token' }), {
