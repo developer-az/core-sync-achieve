@@ -173,8 +173,11 @@ const Settings = () => {
       const data = await fetchTasks();
       setTasks(data);
       toast.success('Tasks fetched successfully from Express API!');
-    } catch (error) {
-      toast.error('Failed to fetch tasks from Express API');
+    } catch (error: any) {
+      console.error('Task fetch error:', error);
+      toast.error(error.message || 'Failed to fetch tasks from Express API', {
+        duration: 5000,
+      });
     } finally {
       setApiLoading(false);
     }
