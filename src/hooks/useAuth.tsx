@@ -90,14 +90,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      // Use 'local' scope to clear session locally even if server call fails
+      await supabase.auth.signOut({ scope: 'local' });
+      
+      // Clear state immediately
+      setSession(null);
+      setUser(null);
       
       toast.success('Signed out successfully');
       navigate('/auth');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign out');
-      throw error;
+      // Even if there's an error, clear local state and navigate
+      console.error('Sign out error:', error);
+      setSession(null);
+      setUser(null);
+      toast.success('Signed out successfully');
+      navigate('/auth');
     }
   };
 
