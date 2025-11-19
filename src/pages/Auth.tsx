@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dumbbell } from 'lucide-react';
+import { Dumbbell, Github } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -23,7 +23,7 @@ const Auth = () => {
   const [fitnessLevel, setFitnessLevel] = useState('beginner');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signUp, signIn, user, resetPassword, updatePassword } = useAuth();
+  const { signUp, signIn, signInWithGitHub, user, resetPassword, updatePassword } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -258,6 +258,30 @@ const Auth = () => {
                 )}
               </Button>
             </form>
+
+            {!isForgotPassword && !isResetPassword && (
+              <>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={signInWithGitHub}
+                  disabled={isLoading}
+                >
+                  <Github className="mr-2 h-4 w-4" />
+                  GitHub
+                </Button>
+              </>
+            )}
 
             {!isResetPassword && (
               <>

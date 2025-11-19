@@ -9,6 +9,7 @@ interface AuthContextType {
   session: Session | null;
   signUp: (email: string, password: string, username: string, fitnessLevel: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGitHub: () => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
@@ -88,6 +89,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithGitHub = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in with GitHub');
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     try {
       // Use 'local' scope to clear session locally even if server call fails
@@ -141,7 +158,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, resetPassword, updatePassword, loading }}>
+    <AuthContext.Provider value={{ user, session, signUp, signIn, signInWithGitHub, signOut, resetPassword, updatePassword, loading }}>
       {children}
     </AuthContext.Provider>
   );
