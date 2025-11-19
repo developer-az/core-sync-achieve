@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2, Dumbbell } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { RecentWorkoutHistory } from '@/components/RecentWorkoutHistory';
 
 type ExerciseType = 'cardio' | 'strength' | 'flexibility';
 
@@ -151,6 +152,13 @@ const WorkoutLog = () => {
           <Dumbbell className="h-8 w-8 text-cyan mr-3" />
           <h1 className="text-3xl font-bold text-foreground">Log Workout</h1>
         </div>
+
+        {/* Recent Workout History */}
+        {user && (
+          <div className="mb-6">
+            <RecentWorkoutHistory userId={user.id} />
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Exercises */}
