@@ -11,11 +11,11 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Navbar from '@/components/Navbar';
-import { ArrowLeft, Moon, Sun, Edit2, Check, X, Crown, Link2, Database } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Edit2, Check, X, Crown, Link2, Database, Plus, Trash2, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TokenManagement } from '@/components/TokenManagement';
 import { SubscriptionModal } from '@/components/SubscriptionModal';
-import { fetchTasks, checkApiHealth } from '@/lib/expressApi';
+import { fetchTasks, checkApiHealth, createTask, updateTask, deleteTask } from '@/lib/expressApi';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -30,6 +30,11 @@ const Settings = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [editingTaskId, setEditingTaskId] = useState<string | number | null>(null);
+  const [editTaskTitle, setEditTaskTitle] = useState('');
+  const [editTaskDescription, setEditTaskDescription] = useState('');
   
   const [profile, setProfile] = useState({
     username: '',
@@ -178,6 +183,89 @@ const Settings = () => {
       toast.error(error.message || 'Failed to fetch tasks from Express API', {
         duration: 5000,
       });
+    } finally {
+      setApiLoading(false);
+    }
+  };
+
+  const handleCreateTask = async () => {
+    if (!newTaskTitle.trim()) {
+      toast.error('Task title is required');
+      return;
+    }
+
+    setApiLoading(true);
+    try {
+      const newTask = await createTask({
+        title: newTaskTitle,
+        description: newTaskDescription || undefined,
+        completed: false,
+      });
+      toast.success('Task created successfully!');
+      setNewTaskTitle('');
+      setNewTaskDescription('');
+      // Refresh tasks list
+      await handleFetchTasks();
+    } catch (error: any) {
+      console.error('Task creation error:', error);
+      toast.error(error.message || 'Failed to create task');
+    } finally {
+      setApiLoading(false);
+    }
+  };
+
+  const handleStartEdit = (task: any) => {
+    setEditingTaskId(task.id);
+    setEditTaskTitle(task.title || '');
+    setEditTaskDescription(task.description || '');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTaskId(null);
+    setEditTaskTitle('');
+    setEditTaskDescription('');
+  };
+
+  const handleUpdateTask = async (taskId: string | number) => {
+    if (!editTaskTitle.trim()) {
+      toast.error('Task title is required');
+      return;
+    }
+
+    setApiLoading(true);
+    try {
+      await updateTask(taskId, {
+        title: editTaskTitle,
+        description: editTaskDescription || undefined,
+      });
+      toast.success('Task updated successfully!');
+      setEditingTaskId(null);
+      setEditTaskTitle('');
+      setEditTaskDescription('');
+      // Refresh tasks list
+      await handleFetchTasks();
+    } catch (error: any) {
+      console.error('Task update error:', error);
+      toast.error(error.message || 'Failed to update task');
+    } finally {
+      setApiLoading(false);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string | number) => {
+    if (!confirm('Are you sure you want to delete this task?')) {
+      return;
+    }
+
+    setApiLoading(true);
+    try {
+      await deleteTask(taskId);
+      toast.success('Task deleted successfully!');
+      // Refresh tasks list
+      await handleFetchTasks();
+    } catch (error: any) {
+      console.error('Task deletion error:', error);
+      toast.error(error.message || 'Failed to delete task');
     } finally {
       setApiLoading(false);
     }
@@ -441,6 +529,48 @@ const Settings = () => {
                 </code>
               </div>
 
+              {/* Create New Task */}
+              <div className="p-4 bg-card/30 rounded-lg border border-border/50">
+                <h3 className="font-medium text-foreground mb-3 flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-cyan" />
+                  Create New Task (POST)
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="newTaskTitle" className="text-sm">Title *</Label>
+                    <Input
+                      id="newTaskTitle"
+                      value={newTaskTitle}
+                      onChange={(e) => setNewTaskTitle(e.target.value)}
+                      placeholder="Enter task title"
+                      maxLength={200}
+                      disabled={apiLoading || !apiHealthy}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="newTaskDescription" className="text-sm">Description</Label>
+                    <Textarea
+                      id="newTaskDescription"
+                      value={newTaskDescription}
+                      onChange={(e) => setNewTaskDescription(e.target.value)}
+                      placeholder="Enter task description (optional)"
+                      maxLength={1000}
+                      disabled={apiLoading || !apiHealthy}
+                      className="mt-1 min-h-[80px]"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleCreateTask}
+                    disabled={apiLoading || !apiHealthy || !newTaskTitle.trim()}
+                    className="w-full bg-cyan hover:bg-cyan/90"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {apiLoading ? 'Creating...' : 'Create Task'}
+                  </Button>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
                 <Button
                   onClick={handleFetchTasks}
@@ -448,7 +578,7 @@ const Settings = () => {
                   className="flex-1 bg-gradient-to-r from-cyan to-purple hover:opacity-90"
                 >
                   <Database className="w-4 h-4 mr-2" />
-                  {apiLoading ? 'Fetching...' : 'Fetch Tasks from Express API'}
+                  {apiLoading ? 'Fetching...' : 'Fetch Tasks (GET)'}
                 </Button>
               </div>
 
@@ -461,19 +591,72 @@ const Settings = () => {
                   <div className="space-y-3">
                     {tasks.map((task: any, index: number) => (
                       <div 
-                        key={index} 
+                        key={task.id || index} 
                         className="p-4 bg-background/50 rounded-lg border border-border/30 hover:border-cyan/30 transition-colors"
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <p className="text-sm text-foreground font-semibold">
-                            {task.title || task.name || task.exercise || `Workout ${index + 1}`}
-                          </p>
-                          {task.id && (
-                            <code className="text-xs text-cyan/70 px-2 py-0.5 bg-cyan/10 rounded">
-                              ID: {task.id}
-                            </code>
-                          )}
-                        </div>
+                        {editingTaskId === task.id ? (
+                          /* Edit Mode */
+                          <div className="space-y-3">
+                            <div>
+                              <Label htmlFor={`editTitle-${task.id}`} className="text-xs">Title *</Label>
+                              <Input
+                                id={`editTitle-${task.id}`}
+                                value={editTaskTitle}
+                                onChange={(e) => setEditTaskTitle(e.target.value)}
+                                placeholder="Task title"
+                                maxLength={200}
+                                disabled={apiLoading}
+                                className="mt-1"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor={`editDesc-${task.id}`} className="text-xs">Description</Label>
+                              <Textarea
+                                id={`editDesc-${task.id}`}
+                                value={editTaskDescription}
+                                onChange={(e) => setEditTaskDescription(e.target.value)}
+                                placeholder="Task description"
+                                maxLength={1000}
+                                disabled={apiLoading}
+                                className="mt-1 min-h-[60px]"
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleUpdateTask(task.id)}
+                                disabled={apiLoading || !editTaskTitle.trim()}
+                                className="flex-1 bg-cyan hover:bg-cyan/90"
+                              >
+                                <Save className="w-3 h-3 mr-1" />
+                                Save (PATCH)
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={handleCancelEdit}
+                                disabled={apiLoading}
+                              >
+                                <X className="w-3 h-3 mr-1" />
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          /* View Mode */
+                          <>
+                            <div className="flex items-start justify-between mb-2">
+                              <p className="text-sm text-foreground font-semibold">
+                                {task.title || task.name || task.exercise || `Workout ${index + 1}`}
+                              </p>
+                              <div className="flex items-center gap-2">
+                                {task.id && (
+                                  <code className="text-xs text-cyan/70 px-2 py-0.5 bg-cyan/10 rounded">
+                                    ID: {task.id}
+                                  </code>
+                                )}
+                              </div>
+                            </div>
                         
                         {task.description && (
                           <p className="text-xs text-muted-foreground mb-2">
@@ -536,6 +719,34 @@ const Settings = () => {
                           <p className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border/50">
                             {task.notes}
                           </p>
+                        )}
+
+                        {/* Action Buttons */}
+                        {task.id && (
+                          <div className="flex gap-2 mt-3 pt-3 border-t border-border/50">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleStartEdit(task)}
+                              disabled={apiLoading}
+                              className="flex-1 border-cyan/30 hover:bg-cyan/10"
+                            >
+                              <Edit2 className="w-3 h-3 mr-1" />
+                              Edit (PATCH)
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteTask(task.id)}
+                              disabled={apiLoading}
+                              className="flex-1 border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                            >
+                              <Trash2 className="w-3 h-3 mr-1" />
+                              Delete
+                            </Button>
+                          </div>
+                        )}
+                          </>
                         )}
                       </div>
                     ))}
