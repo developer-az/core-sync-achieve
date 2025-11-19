@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Navbar from '@/components/Navbar';
-import { ArrowLeft, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Edit2, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TokenManagement } from '@/components/TokenManagement';
 
@@ -20,6 +20,8 @@ const Settings = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState(false);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [tempUsername, setTempUsername] = useState('');
   
   const [profile, setProfile] = useState({
     username: '',
@@ -27,6 +29,94 @@ const Settings = () => {
     fitnessGoals: '',
     avatarUrl: '',
   });
+
+  // Fetch profile data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (error) throw error;
+        
+        if (data) {
+          setProfile({
+            username: data.username || '',
+            fitnessLevel: data.fitness_level || 'beginner',
+            fitnessGoals: data.fitness_goals || '',
+            avatarUrl: data.avatar_url || '',
+          });
+          setTempUsername(data.username || '');
+        }
+      } catch (error: any) {
+        console.error('Error fetching profile:', error);
+        toast.error('Failed to load profile data');
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
+  const validateUsername = (username: string): string | null => {
+    if (!username || username.trim().length === 0) {
+      return 'Username is required';
+    }
+    if (username.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+    if (username.length > 12) {
+      return 'Username cannot exceed 12 characters';
+    }
+    // Only allow letters and spaces
+    const usernameRegex = /^[a-zA-Z\s]+$/;
+    if (!usernameRegex.test(username)) {
+      return 'Username can only contain letters and spaces';
+    }
+    return null;
+  };
+
+  const handleUsernameEdit = () => {
+    setTempUsername(profile.username);
+    setIsEditingUsername(true);
+  };
+
+  const handleUsernameSave = async () => {
+    const validationError = validateUsername(tempUsername);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ username: tempUsername.trim() })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      setProfile({ ...profile, username: tempUsername.trim() });
+      setIsEditingUsername(false);
+      toast.success('Username updated successfully!');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update username');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUsernameCancel = () => {
+    setTempUsername(profile.username);
+    setIsEditingUsername(false);
+  };
 
   const handleSaveProfile = async () => {
     if (!user) return;
@@ -108,14 +198,57 @@ const Settings = () => {
             <h2 className="text-2xl font-semibold text-foreground mb-4">Profile Information</h2>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  value={profile.username}
-                  onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                  placeholder="Enter your username"
-                  className="mt-2"
-                />
+                <div className="flex items-center justify-between mb-2">
+                  <Label htmlFor="username">Username</Label>
+                  {!isEditingUsername && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleUsernameEdit}
+                      className="h-8 gap-1"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                      Edit
+                    </Button>
+                  )}
+                </div>
+                
+                {isEditingUsername ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="username"
+                      value={tempUsername}
+                      onChange={(e) => setTempUsername(e.target.value)}
+                      placeholder="Enter username"
+                      maxLength={12}
+                      className="flex-1"
+                      disabled={loading}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={handleUsernameSave}
+                      disabled={loading}
+                      className="gap-1"
+                    >
+                      <Check className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleUsernameCancel}
+                      disabled={loading}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-2 px-3 py-2 bg-muted rounded-md border border-border">
+                    <p className="text-foreground">{profile.username || 'No username set'}</p>
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Only letters and spaces allowed, max 12 characters
+                </p>
               </div>
 
               <div>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dumbbell } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -32,6 +33,24 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  const validateUsername = (username: string): string | null => {
+    if (!username || username.trim().length === 0) {
+      return 'Username is required';
+    }
+    if (username.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+    if (username.length > 12) {
+      return 'Username cannot exceed 12 characters';
+    }
+    // Only allow letters and spaces
+    const usernameRegex = /^[a-zA-Z\s]+$/;
+    if (!usernameRegex.test(username)) {
+      return 'Username can only contain letters and spaces';
+    }
+    return null;
+  };
+
   const validateForm = () => {
     if (!email || !password) {
       return 'Email and password are required';
@@ -39,11 +58,11 @@ const Auth = () => {
     if (password.length < 6) {
       return 'Password must be at least 6 characters';
     }
-    if (isSignUp && !username) {
-      return 'Username is required';
-    }
-    if (isSignUp && username.length < 3) {
-      return 'Username must be at least 3 characters';
+    if (isSignUp) {
+      const usernameError = validateUsername(username);
+      if (usernameError) {
+        return usernameError;
+      }
     }
     return null;
   };
@@ -88,6 +107,7 @@ const Auth = () => {
     
     const validationError = validateForm();
     if (validationError) {
+      toast.error(validationError);
       return;
     }
 
@@ -146,8 +166,12 @@ const Auth = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required={isSignUp}
-                    minLength={3}
+                    maxLength={12}
+                    disabled={isLoading}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Only letters and spaces, 3-12 characters
+                  </p>
                 </div>
               )}
 
