@@ -82,9 +82,13 @@ const Settings = () => {
         const response = await checkApiHealth();
         setApiHealthy(true);
         console.log('Express API is healthy:', response);
-      } catch (error) {
+      } catch (error: any) {
         setApiHealthy(false);
         console.error('Express API health check failed:', error);
+        // Don't show toast for missing config - it's expected in some environments
+        if (error.message && !error.message.includes('VITE_API_BASE_URL')) {
+          // Only log other errors, don't spam user with toasts on mount
+        }
       }
     };
 
@@ -176,13 +180,21 @@ const Settings = () => {
     setApiLoading(true);
     try {
       const data = await fetchTasks();
-      setTasks(data);
-      toast.success('Tasks fetched successfully from Express API!');
+      // Ensure data is an array
+      const tasksArray = Array.isArray(data) ? data : [];
+      setTasks(tasksArray);
+      if (tasksArray.length > 0) {
+        toast.success(`Fetched ${tasksArray.length} task(s) from Express API!`);
+      } else {
+        toast.info('No tasks found. Create one to get started!');
+      }
     } catch (error: any) {
       console.error('Task fetch error:', error);
       toast.error(error.message || 'Failed to fetch tasks from Express API', {
         duration: 5000,
       });
+      // Clear tasks on error
+      setTasks([]);
     } finally {
       setApiLoading(false);
     }
